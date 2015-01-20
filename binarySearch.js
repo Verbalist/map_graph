@@ -1,10 +1,12 @@
+
 function binarySearch(i,mas){
-	var l = mas[0].id, r = mas[mas.length()].id;
+	var l = 0;
+	var r = mas.length();
 	var c;
-	while (l > r){
-		c = mas[math.floor((r-l)/2)].id
-		if (i >= c) l = c;
+	while (l < r){
+		c = math.floor((r-l)/2)
+		if (i >= mas[c].id) l = c;
 		else r = c;
 	}
-	return c;
+	return mas[c];
 }

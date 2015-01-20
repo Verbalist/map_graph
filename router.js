@@ -3,9 +3,8 @@ var fs = require('fs');
 function route(handle, pathname, response) {
   console.log("About to route a request for " + pathname);
   if (typeof handle[pathname] === 'function') {
-    handle[pathname](response,pathname);
+    handle[pathname](response);
   } else {
- 	console.log('file');
 	if (pathname.indexOf('.js') != -1) {
 	    response.writeHead(200, {"Content-Type": "text/javascript"});
 	} else if (pathname.indexOf('.css') != -1){
