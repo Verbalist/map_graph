@@ -10,15 +10,16 @@ function route(handle, pathname, response) {
 	    response.writeHead(200, {"Content-Type": "text/javascript"});
 	} else if (pathname.indexOf('.css') != -1){
 	    response.writeHead(200, {"Content-Type": "text/css"});
+	} 
+	if (pathname.indexOf('.ico') == -1) {
+		fs.readFile(pathname.slice(1,pathname.length), function (err, logData) {
+			if (err) throw err;
+			var text = logData.toString();
+			response.write(text);
+			response.end();
+
+		})
 	}
-
-	fs.readFile(pathname.slice(1,pathname.length), function (err, logData) {
-		if (err) throw err;
-		var text = logData.toString();
-		response.write(text);
-		response.end();
-
-	})
 
   }
     /*console.log("No request handler found for " + pathname);
