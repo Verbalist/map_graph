@@ -1,10 +1,5 @@
-/*function onMapClick() {
-	graphLayer.getLayer(166).setStyle({        
-        opacity: 0,
-    });
-
-}
-*/
+var ceilingSpeed = 60;
+var stepSpeed = 10; 
 function init() {
 	var req = $.ajax({
 		url:'/edge',
@@ -20,15 +15,49 @@ function init() {
 					'Imagery © <a href="http://mapbox.com">Mapbox</a>',
 		id: 'verbalist.l0489plc'
 	}).addTo(map);
-
-	//map.on('zommend', zoomDown);//zoomstart,zommend,zoomlevelschange,zoomIn(),zoomOut(),
-
 	req.done(setGraph);
+
+	//controls panel
+	var info = L.control({position: 'topright'});
+
+	info.onAdd = function (map) {
+	    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+	    this._div.innerHTML = '<h4>Step speed</h4><select id="speed">' +
+	    	'<option value=5>5</option>' +
+	    	'<option value=10 selected>10</option>' +
+	    	'<option value=15>15</option>' +
+	    	'<option value=15>20</option>' +
+	    	'</select>km/h<br><br>';
+	    var opt ='';
+	    for (var i = 0;i<9;i++) {
+	    	if (i*10 != ceilingSpeed) {
+	    		var temp = '<option value='+(i*10).toString()+'>'+(i*10).toString()+'</option>';
+	    	} else {
+	    		var temp = '<option value='+(i*10).toString()+' selected>'+(i*10).toString()+'</option>';
+	    	}
+	    	opt+=temp;
+	    }
+	    this._div.innerHTML += '<h4>Ceiling speed </h4><select id="ceil">' +
+	    	opt + '</select>km/h<br><br>';
+
+	    return this._div;
+
+	};
+	info.addTo(map);
+	$('#speed').on('click', function(e){
+		stepSpeed = e.target.value;
+		graphController();
+	});
+	$('#ceil').on('click', function(e){
+		ceilingSpeed = e.target.value;
+		graphController();
+	});
+	
 
 }
 function graphController(){
-	for (i in edge) {
-		if (edge[i].speed > (20-map.getZoom())*10) {
+	for (var i in edge) {
+		if ((edge[i].speed > (20-map.getZoom())*stepSpeed) || (edge[i].speed > ceilingSpeed)) {
 			graphLayer.getLayer(edge[i].id).setStyle({opacity: 1});
 		} else {
 			graphLayer.getLayer(edge[i].id).setStyle({opacity: 0});
@@ -39,7 +68,7 @@ function graphController(){
 function setGraph(data){
 	var graphEdges = [];
 	edge = data;
-	for(i in edge) {
+	for(var i in edge) {
 		var latlon = [[parseFloat(edge[i].latlon1.split('/')[0]),parseFloat(edge[i].latlon1.split('/')[1])],
 			[parseFloat(edge[i].latlon2.split('/')[0]),parseFloat(edge[i].latlon2.split('/')[1])]];
 		var pl = new L.polyline(latlon,{color: 'red', opacity: 0});
@@ -49,5 +78,6 @@ function setGraph(data){
 	}
 	graphLayer = L.layerGroup(graphEdges).addTo(map);
 	map.on('zoomend',graphController);
+	graphController();
 
 }

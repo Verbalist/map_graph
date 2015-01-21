@@ -5,27 +5,30 @@ function route(handle, pathname, response) {
   if (typeof handle[pathname] === 'function') {
     handle[pathname](response);
   } else {
-	if (pathname.indexOf('.js') != -1) {
-	    response.writeHead(200, {"Content-Type": "text/javascript"});
-	} else if (pathname.indexOf('.css') != -1){
-	    response.writeHead(200, {"Content-Type": "text/css"});
-	} 
-	if (pathname.indexOf('.ico') == -1) {
-		fs.readFile(pathname.slice(1,pathname.length), function (err, logData) {
-			if (err) throw err;
-			var text = logData.toString();
-			response.write(text);
-			response.end();
+  	if (pathname.indexOf('.') != -1) {
+		if (pathname.indexOf('.js') != -1) {
+		    response.writeHead(200, {"Content-Type": "text/javascript"});
+		} else if (pathname.indexOf('.css') != -1){
+		    response.writeHead(200, {"Content-Type": "text/css"});
+		} 
+		if (pathname.indexOf('.ico') == -1) {
+			fs.readFile(pathname.slice(1,pathname.length), function (err, logData) {
+				if (err) throw err;
+				var text = logData.toString();
+				response.write(text);
+				response.end();
 
-		})
+			})
+		}
+	} else {
+	 	console.log("No request handler found for " + pathname);
+	    response.writeHead(404, {"Content-Type": "text/plain"});
+	    response.write("404 Not found");
+	    response.end();
 	}
 
   }
-    /*console.log("No request handler found for " + pathname);
-    response.writeHead(404, {"Content-Type": "text/plain"});
-    response.write("404 Not found");
-    response.end();
-  }*/
+   
 }
 
 exports.route = route;

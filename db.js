@@ -26,8 +26,4 @@ function getJSON(SQLquery,resolve) {
   });
   promise.then(resolve);
 };
-//select id,(select concat_ws('/',lat,lon) from nodes_test where id=srcid) as latlon1,(select concat_ws('/',lat,lon) from nodes_test where id=trgid) as latlon2,speed from edges_test ;
-//var a = getJSON('select id,(select concat_ws('/',lat,lon) from nodes_test where id=srcid) as latlon1,(select concat_ws('/',lat,lon) from nodes_test where id=trgid) as latlon2,speed from edges_test',function(value){console.log('a')});
-//var b = getJSON('SELECT ID,LAT, LON FROM NODES_TEST',function(value){console.log(value)});
-
 exports.getJSON = getJSON;
